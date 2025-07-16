@@ -2,25 +2,24 @@ module Minesweeper (annotate) where
 
 annotate :: [String] -> [String]
 annotate l =
-  [ [ if (l !! r) !! c == '*'
+  [ [ if c == '*'
         then '*'
         else
           let n =
                 length
-                  [ (x, y)
+                  [ ()
                     | dx <- [-1 .. 1],
                       let x = r + dx,
                       dy <- [-1 .. 1],
-                      let y = c + dy,
-                      (x /= r || y /= c)
-                        && x >= 0
-                        && x < length l
-                        && y >= 0
-                        && y < length (head l),
+                      let y = i + dy,
+                      x /= r || y /= i,
+                      inBounds x y,
                       (l !! x) !! y == '*'
                   ]
            in if n == 0 then ' ' else head (show n)
-      | c <- [0 .. (length (l !! r) - 1)]
+      | (i, c) <- zip [0 ..] row
     ]
-    | r <- [0 .. (length l - 1)]
+    | (r, row) <- zip [0 ..] l
   ]
+  where
+    inBounds x y = x >= 0 && x < length l && y >= 0 && y < length (head l)
